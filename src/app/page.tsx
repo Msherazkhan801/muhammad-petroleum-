@@ -18,6 +18,7 @@ export default function DashboardPage() {
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
       
       {/* Top Welcome Banner & Quick Action Shortcuts */}
+      
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
         <div>
           <div className="flex items-center space-x-2">
