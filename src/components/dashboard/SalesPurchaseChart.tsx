@@ -9,9 +9,14 @@ import { BarChart3, TrendingUp, Calendar, Filter } from 'lucide-react';
 import { useApp } from '@/lib/store';
 
 export default function SalesPurchaseChart() {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'ltr' | 'pkr'>('ltr');
   const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
   const { purchases, sales } = useApp();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate 31 days data for October 2026
   const data = Array.from({ length: 31 }, (_, i) => {
@@ -107,87 +112,93 @@ export default function SalesPurchaseChart() {
 
       {/* Chart Canvas */}
       <div className="w-full h-[280px]">
-        <ResponsiveContainer width="100%" height="100%">
-          {chartType === 'bar' ? (
-            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-              <XAxis 
-                dataKey="day" 
-                stroke="#94a3b8" 
-                fontSize={11} 
-                tickLine={false} 
-              />
-              <YAxis 
-                stroke="#94a3b8" 
-                fontSize={11} 
-                tickLine={false} 
-                tickFormatter={(val) => val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#0f172a', 
-                  borderColor: '#14b8a6', 
-                  borderRadius: '0.75rem',
-                  boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)',
-                  color: '#fff',
-                  fontSize: '12px'
-                }}
-                formatter={(value: any) => [
-                  `${Number(value).toLocaleString()} ${viewMode === 'ltr' ? 'LTR' : 'PKR'}`,
-                  ''
-                ]}
-                labelFormatter={(label) => `October ${label}, 2026`}
-              />
-              <Legend 
-                wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} 
-              />
-              <Bar 
-                dataKey="Purchase" 
-                fill="#94a3b8" 
-                radius={[4, 4, 0, 0]} 
-                name="Purchase (Grey)"
-              />
-              <Bar 
-                dataKey="Sale" 
-                fill="#10b981" 
-                radius={[4, 4, 0, 0]} 
-                name="Sale (Green)"
-              />
-            </BarChart>
-          ) : (
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorSale" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorPur" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#38bdf8" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-              <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} />
-              <YAxis 
-                stroke="#94a3b8" 
-                fontSize={11} 
-                tickFormatter={(val) => val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#0f172a', 
-                  borderColor: '#14b8a6', 
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontSize: '12px'
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} />
-              <Area type="monotone" dataKey="Purchase" stroke="#38bdf8" fillOpacity={1} fill="url(#colorPur)" />
-              <Area type="monotone" dataKey="Sale" stroke="#10b981" fillOpacity={1} fill="url(#colorSale)" />
-            </AreaChart>
-          )}
-        </ResponsiveContainer>
+        {mounted ? (
+          <ResponsiveContainer width="100%" height="100%">
+            {chartType === 'bar' ? (
+              <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
+                <XAxis 
+                  dataKey="day" 
+                  stroke="#94a3b8" 
+                  fontSize={11} 
+                  tickLine={false} 
+                />
+                <YAxis 
+                  stroke="#94a3b8" 
+                  fontSize={11} 
+                  tickLine={false} 
+                  tickFormatter={(val) => val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#0f172a', 
+                    borderColor: '#14b8a6', 
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)',
+                    color: '#fff',
+                    fontSize: '12px'
+                  }}
+                  formatter={(value: any) => [
+                    `${Number(value).toLocaleString()} ${viewMode === 'ltr' ? 'LTR' : 'PKR'}`,
+                    ''
+                  ]}
+                  labelFormatter={(label) => `October ${label}, 2026`}
+                />
+                <Legend 
+                  wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} 
+                />
+                <Bar 
+                  dataKey="Purchase" 
+                  fill="#94a3b8" 
+                  radius={[4, 4, 0, 0]} 
+                  name="Purchase (Grey)"
+                />
+                <Bar 
+                  dataKey="Sale" 
+                  fill="#10b981" 
+                  radius={[4, 4, 0, 0]} 
+                  name="Sale (Green)"
+                />
+              </BarChart>
+            ) : (
+              <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorSale" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorPur" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#38bdf8" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
+                <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} />
+                <YAxis 
+                  stroke="#94a3b8" 
+                  fontSize={11} 
+                  tickFormatter={(val) => val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#0f172a', 
+                    borderColor: '#14b8a6', 
+                    borderRadius: '0.75rem',
+                    color: '#fff',
+                    fontSize: '12px'
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} />
+                <Area type="monotone" dataKey="Purchase" stroke="#38bdf8" fillOpacity={1} fill="url(#colorPur)" />
+                <Area type="monotone" dataKey="Sale" stroke="#10b981" fillOpacity={1} fill="url(#colorSale)" />
+              </AreaChart>
+            )}
+          </ResponsiveContainer>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
+            Loading throughput chart...
+          </div>
+        )}
       </div>
 
       {/* Footer Info */}
